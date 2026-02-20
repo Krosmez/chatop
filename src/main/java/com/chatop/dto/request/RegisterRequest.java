@@ -1,4 +1,4 @@
-package com.chatop.dto;
+package com.chatop.dto.request;
 
 import lombok.Data;
 

@@ -1,8 +1,8 @@
 package com.chatop.service;
 
-import com.chatop.dto.AuthResponse;
-import com.chatop.dto.LoginRequest;
-import com.chatop.dto.RegisterRequest;
+import com.chatop.dto.request.LoginRequest;
+import com.chatop.dto.request.RegisterRequest;
+import com.chatop.dto.response.AuthResponse;
 import com.chatop.entity.User;
 import com.chatop.repository.UserRepository;
 import com.chatop.security.JwtTokenProvider;

@@ -1,9 +1,9 @@
 package com.chatop.controller;
 
-import com.chatop.dto.AuthResponse;
-import com.chatop.dto.LoginRequest;
-import com.chatop.dto.RegisterRequest;
-import com.chatop.dto.UserResponse;
+import com.chatop.dto.request.LoginRequest;
+import com.chatop.dto.request.RegisterRequest;
+import com.chatop.dto.response.AuthResponse;
+import com.chatop.dto.response.UserResponse;
 import com.chatop.entity.User;
 import com.chatop.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<String> login(@RequestBody LoginRequest request) {
-    return ResponseEntity.ok(authService.login(request));
+  public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    return ResponseEntity.ok(new AuthResponse(authService.login(request)));
   }
 
   @GetMapping("/me")
