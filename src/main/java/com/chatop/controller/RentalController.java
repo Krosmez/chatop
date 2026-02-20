@@ -17,9 +17,9 @@ public class RentalController {
   private final RentalService rentalService;
 
   @GetMapping
-  public ResponseEntity<List<Rental>> getAllRentals() {
+  public ResponseEntity<Map<String, List<Rental>>> getAllRentals() {
     List<Rental> rentals = rentalService.getAllRentals();
-    return ResponseEntity.ok(rentals);
+    return ResponseEntity.ok(Map.of("rentals", rentals));
   }
 
   @GetMapping("/{id}")
