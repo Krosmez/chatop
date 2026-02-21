@@ -3,6 +3,8 @@ package com.chatop.repository;
 import com.chatop.entity.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MessageRepository extends JpaRepository<Message, Long> {
-}
+import java.util.Optional;
 
+public interface MessageRepository extends JpaRepository<Message, Long> {
+  Optional<Message> findById(Long id);
+}
