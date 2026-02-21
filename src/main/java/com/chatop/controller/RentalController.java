@@ -73,14 +73,20 @@ public class RentalController {
   ) {
     try {
       Long ownerId = authService.getCurrentUser().getId();
-      String imageUrl = null;
+
+      // Récupérer le rental existant pour garder l'image actuelle si aucune nouvelle image n'est fournie
+      Rental existingRental = rentalService.getRentalById(id);
+      String imageUrl = existingRental.getPicture();
+
+      // Si une nouvelle image est fournie, l'uploader
       if (picture != null && !picture.isEmpty()) {
         try {
           imageUrl = ImageUtils.handleImageUpload(picture);
         } catch (IOException ioException) {
-          return ResponseEntity.internalServerError().body(Map.of("error", "Erreur lors de l’upload de l’image"));
+          return ResponseEntity.internalServerError().body(Map.of("error", "Erreur lors de l'upload de l'image"));
         }
       }
+
       RentalRequest request = new RentalRequest(name, surface, price, imageUrl, description, ownerId);
       rentalService.updateRental(id, request);
       return ResponseEntity.ok(Map.of("message", "Rental updated !"));

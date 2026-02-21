@@ -42,7 +42,6 @@ public class RentalService {
     rental.setName(request.getName());
     rental.setSurface(request.getSurface());
     rental.setPrice(request.getPrice());
-    rental.setPicture(request.getPicture());
     rental.setDescription(request.getDescription());
     rental.setOwnerId(request.getOwnerId());
     rental.setUpdatedAt(LocalDateTime.now());
