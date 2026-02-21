@@ -31,8 +31,8 @@ public class RentalService {
     rental.setPicture(request.getPicture());
     rental.setDescription(request.getDescription());
     rental.setOwnerId(request.getOwnerId());
-    rental.setCreatedAt(LocalDateTime.now());
-    rental.setUpdatedAt(LocalDateTime.now());
+    rental.setCreated_at(LocalDateTime.now());
+    rental.setUpdated_at(LocalDateTime.now());
     rentalRepository.save(rental);
   }
 
@@ -44,7 +44,7 @@ public class RentalService {
     rental.setPrice(request.getPrice());
     rental.setDescription(request.getDescription());
     rental.setOwnerId(request.getOwnerId());
-    rental.setUpdatedAt(LocalDateTime.now());
+    rental.setUpdated_at(LocalDateTime.now());
     return rentalRepository.save(rental);
   }
 }

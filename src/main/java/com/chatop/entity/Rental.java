@@ -26,6 +26,6 @@ public class Rental {
   @Column(name = "owner_id")
   private Long ownerId;
 
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+  private LocalDateTime created_at;
+  private LocalDateTime updated_at;
 }
