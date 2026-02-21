@@ -21,7 +21,6 @@ public class JwtTokenProvider {
     String username = authentication.getName();
     Date now = new Date();
     Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
-    System.out.println("Generating JWT for user: " + username);
     try {
       SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
       return Jwts.builder()
@@ -42,7 +41,6 @@ public class JwtTokenProvider {
             .build()
             .parseSignedClaims(token)
             .getPayload();
-    System.out.println("Extracted username from JWT: " + claims.getSubject());
     return claims.getSubject();
   }
 
@@ -50,7 +48,6 @@ public class JwtTokenProvider {
     SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     try {
       Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-      System.out.println("JWT token is valid");
       return true;
     } catch (Exception ex) {
       return false;

@@ -3,6 +3,7 @@ package com.chatop.service;
 import com.chatop.dto.request.LoginRequest;
 import com.chatop.dto.request.RegisterRequest;
 import com.chatop.dto.response.AuthResponse;
+import com.chatop.dto.response.UserResponse;
 import com.chatop.entity.User;
 import com.chatop.repository.UserRepository;
 import com.chatop.security.JwtTokenProvider;
@@ -54,5 +55,16 @@ public class AuthService {
 
     String email = authentication.getName();
     return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+  }
+
+  public UserResponse getUserById(Long id) {
+    return userRepository.findById(id)
+            .map(user -> new UserResponse(
+                    user.getName(),
+                    user.getEmail(),
+                    user.getCreatedAt(),
+                    user.getUpdatedAt()
+            ))
+            .orElse(null);
   }
 }
