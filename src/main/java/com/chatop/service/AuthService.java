@@ -32,13 +32,10 @@ public class AuthService {
     user.setEmail(request.getEmail());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     userRepository.save(user);
-    // Authentifie l'utilisateur et génère un token
     Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
     );
-    String token = jwtTokenProvider.generateToken(authentication);
-    System.out.println("User registered and authenticated: " + request.getEmail() + ", || JWT: " + token);
-    return new AuthResponse(token); // Crée une classe AuthResponse
+    return new AuthResponse(jwtTokenProvider.generateToken(authentication));
   }
 
   public String login(LoginRequest request) {
