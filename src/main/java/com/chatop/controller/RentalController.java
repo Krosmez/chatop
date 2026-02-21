@@ -4,6 +4,7 @@ import com.chatop.dto.request.RentalRequest;
 import com.chatop.entity.Rental;
 import com.chatop.service.AuthService;
 import com.chatop.service.RentalService;
+import com.chatop.utils.ImageUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +51,7 @@ public class RentalController {
   ) {
     try {
       Long ownerId = authService.getCurrentUser().getId();
-
-      String imageUrl = rentalService.handleImageUpload(picture);
+      String imageUrl = ImageUtils.handleImageUpload(picture);
       RentalRequest request = new RentalRequest(name, surface, price, imageUrl, description, ownerId);
       rentalService.createRental(request);
       return ResponseEntity.ok(Map.of("message", "Rental created !"));
@@ -76,7 +76,7 @@ public class RentalController {
       String imageUrl = null;
       if (picture != null && !picture.isEmpty()) {
         try {
-          imageUrl = rentalService.handleImageUpload(picture);
+          imageUrl = ImageUtils.handleImageUpload(picture);
         } catch (IOException ioException) {
           return ResponseEntity.internalServerError().body(Map.of("error", "Erreur lors de l’upload de l’image"));
         }
