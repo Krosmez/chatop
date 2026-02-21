@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +58,26 @@ public class RentalController {
     }
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<?> updateRental(@PathVariable Long id, @RequestBody RentalRequest request) {
+  @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+  public ResponseEntity<?> updateRental(
+          @PathVariable Long id,
+          @RequestParam("name") String name,
+          @RequestParam("surface") Double surface,
+          @RequestParam("price") Double price,
+          @RequestParam("description") String description,
+          @RequestParam(value = "picture", required = false) MultipartFile picture
+  ) {
     try {
+      Long ownerId = authService.getCurrentUser().getId();
+      String imageUrl = null;
+      if (picture != null && !picture.isEmpty()) {
+        try {
+          imageUrl = rentalService.handleImageUpload(picture);
+        } catch (IOException ioException) {
+          return ResponseEntity.internalServerError().body(Map.of("error", "Erreur lors de l’upload de l’image"));
+        }
+      }
+      RentalRequest request = new RentalRequest(name, surface, price, imageUrl, description, ownerId);
       rentalService.updateRental(id, request);
       return ResponseEntity.ok(Map.of("message", "Rental updated !"));
     } catch (IllegalArgumentException e) {
