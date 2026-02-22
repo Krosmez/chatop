@@ -47,4 +47,10 @@ public class RentalService {
     rental.setUpdated_at(LocalDateTime.now());
     return rentalRepository.save(rental);
   }
+
+  public void deleteRental(Long id) {
+    Rental rental = rentalRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rental not found"));
+    rentalRepository.delete(rental);
+  }
 }

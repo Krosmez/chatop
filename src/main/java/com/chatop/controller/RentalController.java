@@ -96,4 +96,14 @@ public class RentalController {
       return ResponseEntity.notFound().build();
     }
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteRental(@PathVariable Long id) {
+    try {
+      rentalService.deleteRental(id);
+      return ResponseEntity.ok(Map.of("message", "Rental deleted !"));
+    } catch (RuntimeException e) {
+      return ResponseEntity.notFound().build();
+    }
+  }
 }
