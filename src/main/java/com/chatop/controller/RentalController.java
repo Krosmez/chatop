@@ -2,6 +2,8 @@ package com.chatop.controller;
 
 import com.chatop.dto.request.RentalRequest;
 import com.chatop.entity.Rental;
+import com.chatop.exception.BadRequestException;
+import com.chatop.exception.ImageUploadException;
 import com.chatop.service.AuthService;
 import com.chatop.service.RentalService;
 import com.chatop.utils.ImageUtils;
@@ -23,22 +25,14 @@ public class RentalController {
 
   @GetMapping
   public ResponseEntity<Map<String, List<Rental>>> getAllRentals() {
-    try {
-      List<Rental> rentals = rentalService.getAllRentals();
-      return ResponseEntity.ok(Map.of("rentals", rentals));
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(401).build();
-    }
+    List<Rental> rentals = rentalService.getAllRentals();
+    return ResponseEntity.ok(Map.of("rentals", rentals));
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Rental> getRentalById(@PathVariable Long id) {
-    try {
-      Rental rental = rentalService.getRentalById(id);
-      return ResponseEntity.ok(rental);
-    } catch (RuntimeException e) {
-      return ResponseEntity.notFound().build();
-    }
+    Rental rental = rentalService.getRentalById(id);
+    return ResponseEntity.ok(rental);
   }
 
   @PostMapping(consumes = "multipart/form-data")
@@ -49,16 +43,18 @@ public class RentalController {
           @RequestParam("description") String description,
           @RequestParam("picture") MultipartFile picture
   ) {
+    if (picture == null || picture.isEmpty()) {
+      throw new BadRequestException("L'image est requise");
+    }
+
     try {
       Long ownerId = authService.getCurrentUser().getId();
       String imageUrl = ImageUtils.handleImageUpload(picture);
       RentalRequest request = new RentalRequest(name, surface, price, imageUrl, description, ownerId);
       rentalService.createRental(request);
       return ResponseEntity.ok(Map.of("message", "Rental created !"));
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-    } catch (Exception e) {
-      return ResponseEntity.internalServerError().body(Map.of("error", "Erreur lors de l’upload de l’image"));
+    } catch (IOException e) {
+      throw new ImageUploadException("Erreur lors de l'upload de l'image", e);
     }
   }
 
@@ -74,36 +70,24 @@ public class RentalController {
     try {
       Long ownerId = authService.getCurrentUser().getId();
 
-      // Récupérer le rental existant pour garder l'image actuelle si aucune nouvelle image n'est fournie
       Rental existingRental = rentalService.getRentalById(id);
       String imageUrl = existingRental.getPicture();
 
-      // Si une nouvelle image est fournie, l'uploader
       if (picture != null && !picture.isEmpty()) {
-        try {
-          imageUrl = ImageUtils.handleImageUpload(picture);
-        } catch (IOException ioException) {
-          return ResponseEntity.internalServerError().body(Map.of("error", "Erreur lors de l'upload de l'image"));
-        }
+        imageUrl = ImageUtils.handleImageUpload(picture);
       }
 
       RentalRequest request = new RentalRequest(name, surface, price, imageUrl, description, ownerId);
       rentalService.updateRental(id, request);
       return ResponseEntity.ok(Map.of("message", "Rental updated !"));
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-    } catch (RuntimeException e) {
-      return ResponseEntity.notFound().build();
+    } catch (IOException e) {
+      throw new ImageUploadException("Erreur lors de l'upload de l'image", e);
     }
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteRental(@PathVariable Long id) {
-    try {
-      rentalService.deleteRental(id);
-      return ResponseEntity.ok(Map.of("message", "Rental deleted !"));
-    } catch (RuntimeException e) {
-      return ResponseEntity.notFound().build();
-    }
+    rentalService.deleteRental(id);
+    return ResponseEntity.ok(Map.of("message", "Rental deleted !"));
   }
 }

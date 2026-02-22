@@ -16,16 +16,8 @@ public class UserController {
   private final AuthService authService;
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserResponse> getUSerById(@PathVariable Long id) {
-    try {
-      UserResponse userResponse = authService.getUserById(id);
-      if (userResponse == null) {
-        return ResponseEntity.notFound().build();
-      }
-      return ResponseEntity.ok(userResponse);
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(401).build();
-    }
+  public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    UserResponse userResponse = authService.getUserById(id);
+    return ResponseEntity.ok(userResponse);
   }
-
 }

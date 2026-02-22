@@ -5,6 +5,9 @@ import com.chatop.dto.request.RegisterRequest;
 import com.chatop.dto.response.AuthResponse;
 import com.chatop.dto.response.UserResponse;
 import com.chatop.entity.User;
+import com.chatop.exception.BadRequestException;
+import com.chatop.exception.ResourceNotFoundException;
+import com.chatop.exception.UnauthorizedException;
 import com.chatop.repository.UserRepository;
 import com.chatop.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,7 @@ public class AuthService {
 
   public AuthResponse register(RegisterRequest request) {
     if (userRepository.existsByName(request.getName())) {
-      throw new RuntimeException("Username is already taken");
+      throw new BadRequestException("Le nom d'utilisateur est déjà utilisé");
     }
 
     User user = new User();
@@ -33,6 +36,7 @@ public class AuthService {
     user.setEmail(request.getEmail());
     user.setPassword(passwordEncoder.encode(request.getPassword()));
     userRepository.save(user);
+
     Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
     );
@@ -50,11 +54,12 @@ public class AuthService {
   public User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("Utilisateur non authentifié");
+      throw new UnauthorizedException("Utilisateur non authentifié");
     }
 
     String email = authentication.getName();
-    return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+    return userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé"));
   }
 
   public UserResponse getUserById(Long id) {
@@ -65,6 +70,6 @@ public class AuthService {
                     user.getCreatedAt(),
                     user.getUpdatedAt()
             ))
-            .orElse(null);
+            .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé"));
   }
 }

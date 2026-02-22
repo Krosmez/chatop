@@ -18,32 +18,24 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-    try {
-      return ResponseEntity.ok(authService.register(request));
-
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(400).body(new AuthResponse(e.getMessage()));
-    }
+    return ResponseEntity.ok(authService.register(request));
   }
 
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-    try {
-      return ResponseEntity.ok(new AuthResponse(authService.login(request)));
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(401).body(new AuthResponse(e.getMessage()));
-    }
+    return ResponseEntity.ok(new AuthResponse(authService.login(request)));
   }
 
   @GetMapping("/me")
   public ResponseEntity<UserResponse> getCurrentUser() {
-    try {
-      User user = authService.getCurrentUser();
-      UserResponse userResponse = new UserResponse(user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
-      return ResponseEntity.ok(userResponse);
-    } catch (RuntimeException e) {
-      return ResponseEntity.status(401).build();
-    }
+    User user = authService.getCurrentUser();
+    UserResponse userResponse = new UserResponse(
+            user.getName(),
+            user.getEmail(),
+            user.getCreatedAt(),
+            user.getUpdatedAt()
+    );
+    return ResponseEntity.ok(userResponse);
   }
 
 }
