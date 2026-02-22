@@ -24,11 +24,11 @@ public class JwtTokenProvider {
     try {
       SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
       return Jwts.builder()
-              .subject(username)
-              .issuedAt(now)
-              .expiration(expiryDate)
-              .signWith(key)
-              .compact();
+                 .subject(username)
+                 .issuedAt(now)
+                 .expiration(expiryDate)
+                 .signWith(key)
+                 .compact();
     } catch (Exception e) {
       throw new RuntimeException("Erreur lors de la génération du token", e);
     }
@@ -37,10 +37,10 @@ public class JwtTokenProvider {
   public String getUsernameFromJWT(String token) {
     SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
     Claims claims = Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+                        .verifyWith(key)
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
     return claims.getSubject();
   }
 

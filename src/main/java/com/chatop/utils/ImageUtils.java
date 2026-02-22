@@ -33,20 +33,16 @@ public class ImageUtils {
     if (picture == null || picture.isEmpty()) {
       return null;
     }
-
     String uploadDir = "uploads/";
     File directory = new File(uploadDir);
     if (!directory.exists()) {
       directory.mkdirs();
     }
-
     String filename = System.currentTimeMillis() + "_" + picture.getOriginalFilename();
     Path filePath = Paths.get(uploadDir + filename);
-
     try (InputStream inputStream = picture.getInputStream()) {
       Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
     }
-
     return "http://localhost:8080/api/images/" + filename; // Retourner l'URL complète
   }
 }

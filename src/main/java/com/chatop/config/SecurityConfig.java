@@ -25,23 +25,22 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf().disable()
-            .authorizeHttpRequests(auth -> {
-              try {
-                auth
-                        .requestMatchers(new AntPathRequestMatcher("/api/auth/register")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/auth/login")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/images/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
-                        .anyRequest().authenticated()
-                        .and()
-                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-              } catch (Exception e) {
-                throw new RuntimeException(e);
-              }
-            });
-
+        .authorizeHttpRequests(auth -> {
+          try {
+            auth
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/register")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/login")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/images/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
     http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }

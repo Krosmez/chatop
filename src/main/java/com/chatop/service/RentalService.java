@@ -21,7 +21,7 @@ public class RentalService {
 
   public Rental getRentalById(Long id) {
     return rentalRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Rental not found"));
+                           .orElseThrow(() -> new ResourceNotFoundException("Rental not found"));
   }
 
   public void createRental(RentalRequest request) {
@@ -39,7 +39,7 @@ public class RentalService {
 
   public Rental updateRental(Long id, RentalRequest request) {
     Rental rental = rentalRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Rental not found"));
+                                    .orElseThrow(() -> new ResourceNotFoundException("Rental not found"));
     rental.setName(request.getName());
     rental.setSurface(request.getSurface());
     rental.setPrice(request.getPrice());
@@ -51,7 +51,7 @@ public class RentalService {
 
   public void deleteRental(Long id) {
     Rental rental = rentalRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Rental not found"));
+                                    .orElseThrow(() -> new ResourceNotFoundException("Rental not found"));
     rentalRepository.delete(rental);
   }
 }

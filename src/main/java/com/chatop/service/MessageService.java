@@ -19,20 +19,16 @@ public class MessageService {
     if (request.getMessage() == null || request.getMessage().trim().isEmpty()) {
       throw new BadRequestException("Le message ne peut pas être vide");
     }
-
     Long userId;
     try {
       userId = authService.getCurrentUser().getId();
     } catch (Exception e) {
       throw new UnauthorizedException("Utilisateur non authentifié");
     }
-
     if (request.getRental_id() == null) {
       throw new BadRequestException("L'id de la location est obligatoire");
     }
-
     rentalService.getRentalById(request.getRental_id());
-
     Message message = new Message();
     message.setUserId(userId);
     message.setRentalId(request.getRental_id());
